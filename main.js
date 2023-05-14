@@ -59,15 +59,24 @@ var HtmlLocalSrcPlugin = class extends import_obsidian.Plugin {
           // return link.src.contains(active_file.basename);
           return link.src.contains("/_resources/");
         });
-        // let active_path = this.app.vault.getResourcePath(active_file);
+        // for v1.2.8
+        let active_path = this.app.vault.getResourcePath(active_file);
+        const url = new URL(active_path);
+
         // active_path = active_path.substring(0, active_path.lastIndexOf("/"));
         for (const link of targetLinks) {
           console.log("targetLink old:"+link.src);
           let clean_link = link.src.replace("app://obsidian.md/", "");
           clean_link = clean_link.replace("capacitor://localhost/", "");
-          // let full_link = active_path + "/" + clean_link;
-          // link.src = full_link;
-          link.src = "app://local/"+app.vault.adapter.basePath+"/"+clean_link;
+          // 1.2.8 app://local被废弃
+          // // let full_link = active_path + "/" + clean_link;
+          // // link.src = full_link;
+          // link.src = "app://local/"+app.vault.adapter.basePath+"/"+clean_link;
+          // console.log("targetLink new :"+link.src);
+          
+          // for 1.2.8
+          url.pathname = app.vault.adapter.basePath+"/"+clean_link;
+          link.src=url.toString();
           console.log("targetLink new :"+link.src);
           if (import_obsidian.Platform.isMobile) {
             link.style.objectFit = "contain";
